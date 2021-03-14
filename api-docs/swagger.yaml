@@ -1,0 +1,590 @@
+swagger: '2.0'
+info:
+  title: Taxi Pooler APIs
+  description: Testing the APIs
+  version: 2.0.0
+host: 'localhost:3000'
+schemes:
+  - http
+consumes:
+  - application/json
+produces:
+  - application/json
+definitions: {}
+paths:
+  /auth/register:
+    post:
+      description: Register USER
+      tags:
+        - Auth
+      parameters:
+        - name: body
+          in: body
+          schema:
+            type: object
+            properties:
+              userID:
+                type: string
+              password:
+                type: string
+              confirmPassword:
+                type: string
+            required:
+              - userID
+              - password
+              - confirmPassword
+            additionalProperties: false
+      responses:
+        '200':
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+            required:
+              - message
+            additionalProperties: false
+          description: Default Response
+  /auth/adminFlag:
+    post:
+      description: change admins status of user
+      tags:
+        - Auth
+      parameters:
+        - name: body
+          in: body
+          schema:
+            type: object
+            properties:
+              userID:
+                type: string
+              adminFlag:
+                type: boolean
+            required:
+              - userID
+              - adminFlag
+            additionalProperties: false
+        - in: header
+          name: Authorization
+          required: true
+          type: string
+      responses:
+        '200':
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+            required:
+              - message
+            additionalProperties: false
+          description: Default Response
+  /auth/login:
+    post:
+      description: Login User
+      tags:
+        - Auth
+      parameters:
+        - name: body
+          in: body
+          schema:
+            type: object
+            properties:
+              userID:
+                type: string
+              password:
+                type: string
+            required:
+              - userID
+              - password
+            additionalProperties: false
+      responses:
+        '200':
+          schema:
+            type: object
+            properties:
+              jwt:
+                type: string
+              user:
+                type: object
+                properties:
+                  userID:
+                    type: string
+                  isAdmin:
+                    type: boolean
+                required:
+                  - userID
+                  - isAdmin
+            required:
+              - jwt
+            additionalProperties: false
+          description: Default Response
+  /auth/me:
+    post:
+      description: Get USER details
+      tags:
+        - Auth
+      parameters:
+        - in: header
+          name: Authorization
+          required: true
+          type: string
+      responses:
+        '200':
+          schema:
+            type: object
+            properties:
+              userID:
+                type: string
+              isAdmin:
+                type: boolean
+            required:
+              - userID
+              - isAdmin
+          description: Default Response
+  /ride/location:
+    get:
+      description: 'get a map of < id : location name >'
+      tags:
+        - locations
+      parameters:
+        - in: header
+          name: Authorization
+          required: true
+          type: string
+      responses:
+        '200':
+          schema:
+            type: array
+            items:
+              type: string
+          description: Default Response
+    post:
+      description: add location
+      tags:
+        - locations
+      parameters:
+        - name: body
+          in: body
+          schema:
+            type: object
+            properties:
+              name:
+                type: string
+              roadName:
+                type: string
+            required:
+              - name
+              - roadName
+        - in: header
+          name: Authorization
+          required: true
+          type: string
+      responses:
+        '200':
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+            required:
+              - message
+            additionalProperties: false
+          description: Default Response
+  /ride/roads:
+    get:
+      description: get all roads
+      tags:
+        - roads
+      parameters:
+        - in: header
+          name: Authorization
+          required: true
+          type: string
+      responses:
+        '200':
+          schema:
+            type: array
+            items:
+              type: object
+              properties:
+                name:
+                  type: string
+                locations:
+                  type: array
+                  items:
+                    type: string
+              required:
+                - name
+                - locations
+          description: Default Response
+    post:
+      description: add new road
+      tags:
+        - roads
+      parameters:
+        - name: body
+          in: body
+          schema:
+            type: object
+            properties:
+              name:
+                type: string
+            required:
+              - name
+        - in: header
+          name: Authorization
+          required: true
+          type: string
+      responses:
+        '200':
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+            required:
+              - message
+            additionalProperties: false
+          description: Default Response
+  /ride/vehicle:
+    get:
+      description: get all Vehicles
+      tags:
+        - Vehicles
+      parameters:
+        - in: header
+          name: Authorization
+          required: true
+          type: string
+      responses:
+        '200':
+          schema:
+            type: array
+            items:
+              type: object
+              properties:
+                name:
+                  type: string
+                maxCapacity:
+                  type: integer
+                freeSeats:
+                  type: integer
+                road_id:
+                  type: object
+                  additionalProperties: true
+                date:
+                  type: string
+                isAssigned:
+                  type: boolean
+              required:
+                - name
+                - maxCapacity
+                - freeSeats
+                - road_id
+                - date
+                - isAssigned
+              additionalProperties: true
+          description: Default Response
+    post:
+      description: add new vehicle
+      tags:
+        - Vehicles
+      parameters:
+        - name: body
+          in: body
+          schema:
+            type: object
+            properties:
+              name:
+                type: string
+              maxCapacity:
+                type: integer
+            required:
+              - name
+              - maxCapacity
+        - in: header
+          name: Authorization
+          required: true
+          type: string
+      responses:
+        '200':
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+            required:
+              - message
+            additionalProperties: false
+          description: Default Response
+  /ride/vehicle/project:
+    get:
+      description: get all Vehicles
+      tags:
+        - Vehicles
+      parameters:
+        - in: header
+          name: Authorization
+          required: true
+          type: string
+      responses:
+        '200':
+          schema:
+            type: array
+            items:
+              type: object
+              properties:
+                name:
+                  type: string
+                maxCapacity:
+                  type: integer
+                freeSeats:
+                  type: integer
+                road_id:
+                  type: object
+                  additionalProperties: true
+                date:
+                  type: string
+                isAssigned:
+                  type: boolean
+              required:
+                - name
+                - maxCapacity
+                - freeSeats
+                - road_id
+                - date
+                - isAssigned
+              additionalProperties: true
+          description: Default Response
+  /ride/trip:
+    get:
+      description: get all trips
+      tags:
+        - trips
+      parameters:
+        - in: header
+          name: Authorization
+          required: true
+          type: string
+      responses:
+        '200':
+          schema:
+            type: array
+            items:
+              type: object
+              properties:
+                _id:
+                  type: string
+                userID:
+                  type: string
+                numOfPassengers:
+                  type: integer
+                vehicleID:
+                  type: object
+                  additionalProperties: true
+                date:
+                  type: string
+                source:
+                  type: string
+                dest:
+                  type: string
+              required:
+                - userID
+                - numOfPassengers
+                - vehicleID
+                - source
+                - dest
+                - date
+              additionalProperties: true
+          description: Default Response
+    post:
+      description: book trip
+      tags:
+        - trips
+      parameters:
+        - name: body
+          in: body
+          schema:
+            type: object
+            properties:
+              numOfPassengers:
+                type: integer
+              date:
+                type: string
+              source:
+                type: string
+              dest:
+                type: string
+            required:
+              - numOfPassengers
+              - source
+              - dest
+              - date
+        - in: header
+          name: Authorization
+          required: true
+          type: string
+      responses:
+        '200':
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+            required:
+              - message
+            additionalProperties: false
+          description: Default Response
+    delete:
+      description: cancel trip
+      tags:
+        - trips
+      parameters:
+        - name: body
+          in: body
+          schema:
+            type: object
+            properties:
+              tripID:
+                type: string
+            required:
+              - tripID
+        - in: header
+          name: Authorization
+          required: true
+          type: string
+      responses:
+        '200':
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+            required:
+              - message
+            additionalProperties: false
+          description: Default Response
+  /ride/trip/project:
+    get:
+      description: get all trips
+      tags:
+        - trips
+      parameters:
+        - in: header
+          name: Authorization
+          required: true
+          type: string
+      responses:
+        '200':
+          schema:
+            type: array
+            items:
+              type: object
+              properties:
+                _id:
+                  type: string
+                userID:
+                  type: string
+                numOfPassengers:
+                  type: integer
+                vehicleID:
+                  type: object
+                  additionalProperties: true
+                date:
+                  type: string
+                source:
+                  type: string
+                dest:
+                  type: string
+              required:
+                - userID
+                - numOfPassengers
+                - vehicleID
+                - source
+                - dest
+                - date
+              additionalProperties: true
+          description: Default Response
+  /ride/trip/me:
+    get:
+      description: get all trips
+      tags:
+        - trips
+      parameters:
+        - in: header
+          name: Authorization
+          required: true
+          type: string
+      responses:
+        '200':
+          schema:
+            type: array
+            items:
+              type: object
+              properties:
+                _id:
+                  type: string
+                userID:
+                  type: string
+                numOfPassengers:
+                  type: integer
+                vehicleID:
+                  type: object
+                  additionalProperties: true
+                date:
+                  type: string
+                source:
+                  type: string
+                dest:
+                  type: string
+              required:
+                - userID
+                - numOfPassengers
+                - vehicleID
+                - source
+                - dest
+                - date
+              additionalProperties: true
+          description: Default Response
+  /ride/trip/me/project:
+    get:
+      description: get all trips
+      tags:
+        - trips
+      parameters:
+        - in: header
+          name: Authorization
+          required: true
+          type: string
+      responses:
+        '200':
+          schema:
+            type: array
+            items:
+              type: object
+              properties:
+                _id:
+                  type: string
+                userID:
+                  type: string
+                numOfPassengers:
+                  type: integer
+                vehicleID:
+                  type: object
+                  additionalProperties: true
+                date:
+                  type: string
+                source:
+                  type: string
+                dest:
+                  type: string
+              required:
+                - userID
+                - numOfPassengers
+                - vehicleID
+                - source
+                - dest
+                - date
+              additionalProperties: true
+          description: Default Response
